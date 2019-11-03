@@ -1,40 +1,40 @@
-import React from 'react';
+import React, {useState} from 'react';
+import Typography from '@material-ui/core/Typography';
+import grey from '@material-ui/core/colors/grey';
 
-class SearchBar extends React.Component {
-  state = {
-    term: ''
-  };
+const SearchBar = (props) => {
+    const [term, setTerm] = useState('')
+    const onSubmitEvent = event => {
+      event.preventDefault(event);
+      props.onSubmit(term);
+    };
 
-  // 1. OnChange Handler -------------------
+    const styles = {
+      segmentTheme: {
+        backgroundColor: props.theme === 'dark' ? grey[800] : '',
+      },
+      inputTheme: {
+        backgroundColor: props.theme === 'dark' ? grey[900] : '',
+        color: props.theme === 'dark' ? 'white' : '',
+      },
+    };
 
-  // onInputChange = event => {
-  //   console.log(event.target.value);
-  // };
-
-  // ---------------------------------------
-
-  onSubmitEvent = event => {
-    event.preventDefault(event);
-
-    this.props.onSubmit(this.state.term);
-  };
-
-  render() {
     return (
-      <div className="ui segment">
-        <form onSubmit={event => this.onSubmitEvent(event)} className="ui form">
+      <div className="ui segment" style={styles.segmentTheme}>
+        <form onSubmit={event => onSubmitEvent(event)} className="ui form">
           <div className="ui field"></div>
-          <label>Search Pictures on HERE!</label>
+          <Typography>Search Pictures on here!</Typography>
           <input
             type="text"
-            placeholder="Please type images by name and press ENTER"
-            value={this.state.term}
-            // onChange={this.onInputChange}
-            onChange={e => this.setState({ term: e.target.value })}
+            placeholder="Please type images by name and press enter"
+            value={term}
+            onChange={e => setTerm(e.target.value) }
+            style={styles.inputTheme}
+            autoFocus
           />
         </form>
       </div>
     );
-  }
 }
+
 export default SearchBar;
