@@ -1,33 +1,41 @@
-import React from 'react';
+import React, {useState} from 'react';
 import unsplash from '../api/unsplash';
 import SearchBar from './SearchBar';
 import ImageList from './ImageList';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import SwitchTheme from './SwitchTheme'
 
-class App extends React.Component {
-  state = {
-    images: []
-  };
+const App = () => {
+  const [images, setImages] = useState([])
+  const [theme, setTheme] = useState('dark')
 
-  // 1
-  // console.log(term);
-  onSearchSubmit = async term => {
+  const MuiTheme = createMuiTheme({
+    palette: {
+      type: theme,
+    },
+  });
+
+  const onSearchSubmit = async term => {
     const response = await unsplash.get('/search/photos', {
       params: {
         query: term
       }
     });
-    // console.log(response.data.results);
-    this.setState({ images: response.data.results });
+    setImages(response.data.results)
   };
 
-  render() {
-    return (
-      <div className="ui container" style={{ marginTop: '20px' }}>
-        <SearchBar onSubmit={this.onSearchSubmit} />
-        <ImageList images={this.state.images} />
-      </div>
+   return (
+    <MuiThemeProvider theme={MuiTheme}>
+      <CssBaseline>
+        <div className="ui container" style={{ marginTop: '20px' }}>
+          <SwitchTheme theme={theme} setTheme={setTheme} />
+          <SearchBar onSubmit={onSearchSubmit} theme={theme}/>
+          <ImageList images={images} />
+        </div>
+      </CssBaseline>
+     </MuiThemeProvider>
     );
-  }
 }
 
 export default App;
